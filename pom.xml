@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd ">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.unicon</groupId>
-    <artifactId>cas4-overlay</artifactId>
+    <groupId>com.startjg.crp.sso</groupId>
+    <artifactId>crp-sso-server</artifactId>
     <packaging>war</packaging>
     <version>1.0</version>
 
@@ -15,7 +15,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.6</version>
                 <configuration>
-                    <warName>cas</warName>
+                    <warName>sso</warName>
                     <overlays>
                         <overlay>
                             <groupId>org.jasig.cas</groupId>
@@ -23,6 +23,12 @@
                             <excludes>
                                 <exclude>WEB-INF/cas.properties</exclude>
                                 <exclude>WEB-INF/classes/log4j.xml</exclude>
+                                <exclude>WEB-INF/deployerConfigContext.xml</exclude>
+                                <exclude>WEB-INF/spring-configuration/ticketExpirationPolicies.xml</exclude>
+                                <exclude>WEB-INF/spring-configuration/ticketGrantingTicketCookieGenerator.xml</exclude>
+                                <exclude>WEB-INF/login-webflow.xml</exclude>
+                                <exclude>WEB-INF/view/jsp/default/ui/casLoginView.jsp</exclude>
+                                <exclude>WEB-INF/spring-configuration/ticketRegistry.xml</exclude>
                             </excludes>
                         </overlay>
                     </overlays>
@@ -35,7 +41,7 @@
             </plugin>
 
         </plugins>
-        <finalName>cas</finalName>
+        <finalName>sso</finalName>
     </build>
 
     <dependencies>
@@ -46,7 +52,22 @@
             <type>war</type>
             <scope>runtime</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.jasig.cas</groupId>
+            <artifactId>cas-server-support-jdbc</artifactId>
+            <version>${cas.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>c3p0</groupId>
+            <artifactId>c3p0</artifactId>
+            <version>0.9.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.13</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <properties>
@@ -54,6 +75,7 @@
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.framework.version>3.1.0.RELEASE</spring.framework.version>
     </properties>
 
     <repositories>

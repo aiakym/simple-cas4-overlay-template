@@ -1,0 +1,22 @@
+#SSO Server certificate generation
+keytool -genkeypair -alias SSOServerKey -keyalg RSA -keysize 2048 -dname "CN=SSO Server,OU=CRP,O=StartJG,L=StartJG,ST=StartJG,C=CC" -keypass CI1WE1OWbvnJqEr -storepass CI1WE1OWbvnJqEr -keystore etc/certs/ssoServer.jks -validity 3652
+keytool -importkeystore -srckeystore etc/certs/ssoServer.jks -srcstorepass CI1WE1OWbvnJqEr -srcalias SSOServerKey -destkeystore etc/certs/ssoServer.p12 -deststoretype PKCS12 -deststorepass CI1WE1OWbvnJqEr -destalias SSOServerKey -noprompt
+
+#SSO Client certificate generation
+keytool -genkeypair -alias SSOClientKey -keyalg RSA -keysize 2048 -dname "CN=SSO Client,OU=CRP,O=StartJG,L=StartJG,ST=StartJG,C=CC" -keypass dYAYSU0MrtBRV5i -storepass dYAYSU0MrtBRV5i -keystore etc/certs/ssoClient.jks -validity 3652
+keytool -importkeystore -srckeystore etc/certs/ssoClient.jks -srcstorepass dYAYSU0MrtBRV5i -srcalias SSOClientKey -destkeystore etc/certs/ssoClient.p12 -deststoretype PKCS12 -deststorepass dYAYSU0MrtBRV5i -destalias SSOClientKey -noprompt
+
+
+# Copy the client's public certificate to the server's keystore
+keytool -exportcert -keystore etc/certs/ssoClient.jks -storepass dYAYSU0MrtBRV5i -file etc/certs/sso-client-public.cer -alias SSOClientKey
+keytool -importcert -keystore etc/certs/ssoServer.jks -storepass CI1WE1OWbvnJqEr -file etc/certs/sso-client-public.cer -alias SSOClientCert -noprompt
+
+# Take a peek at the server's keystore to make sure that the client's certificate is there
+keytool -v -list -keystore etc/certs/ssoServer.jks -storepass CI1WE1OWbvnJqEr
+
+# Copy the server's public certificate to the client's keystore
+keytool -exportcert -keystore etc/certs/ssoServer.jks -storepass CI1WE1OWbvnJqEr -file etc/certs/sso-server-public.cer -alias SSOServerKey
+keytool -importcert -keystore etc/certs/ssoClient.jks -storepass dYAYSU0MrtBRV5i -file etc/certs/sso-server-public.cer -alias SSOServerCert -noprompt
+
+# Take a peek at the client's keystore to make sure that the client's certificate is there
+keytool -v -list -keystore etc/certs/ssoClient.jks -storepass dYAYSU0MrtBRV5i
